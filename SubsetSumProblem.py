@@ -1,29 +1,38 @@
-# Check if there is any non-empty subset with given sum 
-# Special case of knapsack problem
+'''
+Subset Sum problem is to find a subset from the given array such that it sums upto
+given target. 
 
-def subsetSum(arr, sum):
-    n = len(arr)
-    T = [[None for _ in range(sum+1)] for _ in range(n+1)]
+(Special case of knapsack problem) - find collection of item with given sum 
+
+Time complexity: O(nW)
+Space complexity: O(nW)
+'''
+
+def subsetSum(A, n, sum, lookup):
+    # subset found
+    if sum==0:
+        return True 
     
-    # if sum is zero
-    for i in range(n+1):
-        T[i][0] = True
-
-    # if sum is non-zero
-    for j in range(1, sum+1):
-        T[0][j] = False
-
-    for i in range(1, n+1):
-        for j in range(1, sum+1):
-            # if sum is negative, dont include ith element
-            if arr[i-1] > j:
-                T[i][j] = T[i-1][j]
-            else: # include or exclude ith element
-                T[i][j] = T[i-1][j] or T[i-1][j-arr[i-1]]
+    # if no elements left or sum becomes negative
+    if n<0 or sum<0:
+        return False  
     
-    return T[n][sum]
+    # dynamic input of the subproblem
+    key = str(n) + '|' + str(sum)
 
-nums = [7,3,2,5,8]
-target = 18
+    if key not in lookup:
+        # include current item
+        include = subsetSum(A, n-1, sum - A[n], lookup)
 
-print("Subset Sum : ", subsetSum(nums, target))
+        # exclude current item
+        exclude = subsetSum(A, n-1, sum, lookup)
+
+        lookup[key] = include or exclude
+    
+    return lookup[key]
+
+if __name__ == '__main__':
+    nums = [7,3,2,5,8]
+    target = 18
+    n = len(nums)
+    print("\nSubset Sum : %s\n" % subsetSum(nums, n-1, target, {}))

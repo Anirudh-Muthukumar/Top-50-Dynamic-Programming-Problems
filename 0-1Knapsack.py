@@ -1,21 +1,40 @@
-def knapsack(v, w, n, sum):
-    T = [[None for _ in range(sum+1)]for _ in range(n+1)]
+'''
+In 0-1 Knapsack problem, we are given a set of weights and associated values for each weight.
+The goal of the problem is to find number of elements to include in a collection such that
+the value is maximum and sum weight of the elements is less than or equal to given weight. 
 
-    # if list has 0 elements, Weight is 0
-    for j in range(sum+1):
-        T[0][j] = 0
+Time Complexity: O(nW)
+Space Complexity: O(nW)
+'''
+
+def knapsack(values, weights, n, W, lookup):
+
+    # if weight becomes negative : prune the path
+    if W<0:
+        return -float('inf')
     
-    for i in range(1, n+1):
-        for j in range(sum+1): # consider all weights from 0 to max-cap
-            if w[i-1] > j: # if weight is negative, dont include ith element
-                T[i][j] = T[i-1][j]
-            else: # max value of including/excluding the element
-                T[i][j] = max(T[i-1][j], T[i-1][j-w[i-1]] + v[i-1])
+    # if not items left or weight becomes 0 
+    if n<0 or W==0:
+        return 0 
+    
+    # dynamic input of the subproblem
+    key = str(n) + '|' + str(W)
 
-    return T[n][sum]
+    if key not in lookup:
+        # include the current item
+        include = values[n] + knapsack(values, weights, n-1, W - weights[n], lookup)
 
-lookup = {}
-v = [ 20,5,10, 40,15,25]
-w = [1,2,3,8,7,4]
-target = 10
-print("Knapsack value = ", knapsack(v, w, 5, target))
+        # exclude the current item
+        exclude = knapsack(values, weights, n-1, W, lookup)
+
+        lookup[key] = max(include, exclude)
+    
+    return lookup[key]
+
+if __name__ == '__main__':
+    values = [20, 5, 10, 40, 15, 25]
+    weights = [1, 2, 3, 8, 7, 4]
+    W = 10
+    n = len(values)
+
+    print("\nKnapsack value = %d\n" % knapsack(values, weights, n-1, W, {}))

@@ -1,6 +1,10 @@
 '''
 Shortest Common Supersequence (SCS) is the problem of finding a shortest supersequence 
 Z of given strings X and Y such that both X and Y are subsequences of Z.
+
+Time Complexity: O(mn)
+Space Complexity: O(mn)
+
 '''
 
 # If last two characters are same: 

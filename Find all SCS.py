@@ -1,4 +1,10 @@
-# Find all SCS of given strings X and Y
+'''
+ Find all SCS of given strings X and Y
+
+ Time Complexity: O(mn)
+ Space Complexity: O(mn)
+  
+ '''
 
 def SCS(X, Y, m, n, lookup):
 

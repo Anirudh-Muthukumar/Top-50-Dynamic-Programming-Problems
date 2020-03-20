@@ -1,41 +1,43 @@
-# Partition the given array into two subarrays with equal sum
-# Precondition : 
-# (1) Sum of array elements should be even
-# (2) Array can be divided into two subsets with equal sum
+'''
+Parition problem is to determine whether the given array can be paritioned
+into two subsets with equal sum
 
-def subsetSum(arr, sum):
+(Special case of knapsack problem) - find a collection of items with given value
+
+Time complexity : O(nW)
+Space complexity: O(nW)
+'''
+
+def subsetSum(A, n, sum, lookup):
+    
+    # subset found
+    if sum==0: 
+        return True
+    
+    # no items left or sum is negative
+    if n<0 or sum<0:
+        return False
+    
+    # dynamic input for the subproblem
+    key = str(n) + '|' + str(sum)
+    
+    if key not in lookup:
+        # include current element
+        include = subsetSum(A, n-1, sum-A[n], lookup)
+
+        # exclude current element
+        exclude = subsetSum(A, n-1, sum, lookup)
+
+        lookup[key] = include or exclude 
+    
+    return lookup[key]
+
+def partitionProblem(arr):
+    Sum = sum(arr)
     n = len(arr)
-    T = [[None for _ in range(sum+1)] for _ in range(n+1)]
-
-    # if sum is not zero
-    for j in range(1, sum+1):
-        T[0][j] = False
-    
-    # if sum is zero
-    for i in range(n+1):
-        T[i][0] = True
-    
-    # for rest of the elements
-    for i in range(1, n+1): # arr[i-1] indicates current array element
-        for j in range(1, sum+1): # j indicates current sum 
-            # sum goes to negative, don't include ith element
-            if j - arr[i-1] < 0: 
-                T[i][j] = T[i-1][j]
-            else: # include and exclude ith element
-                T[i][j] = T[i-1][j] or T[i-1][j-arr[i-1]]
-    
-    return T[n][sum]
-
-def partition(arr):
-    sum = 0
-    for num in arr:
-        sum += num
-    
-    return not sum&1 and subsetSum(arr, sum//2)
-    
-
+    return Sum%2==0 and subsetSum(arr, n-1, Sum//2, {})
 
 if __name__ == '__main__':
 
     arr = [3,1,1,2,2,1]
-    print("Partition Array : ", partition(arr))
+    print("\nCan Partition Array ? - %s\n" % partitionProblem(arr))
