@@ -8,7 +8,6 @@ Space Complexity: O(1)
 '''
 
 def matrixChainMultiplication(dims, i, j, lookup):
-
     # base case: one matrix
     if j<=i+1:
         return 0  
